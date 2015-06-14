@@ -36,6 +36,7 @@ char IR_data[daikin_data + 1] =
 
 */
 //  function  //
+/*
 void sendDaikin(int khz) ; //sent command
 void PowerDaikin(int value) ; // on-off
 void Timer_on_Daikin(int value) ; // on-off
@@ -43,16 +44,16 @@ void Timer_on_set_Daikin(int value) ;
 void Timer_off_Daikin(int value) ; // on-off
 void Timer_off_set_Daikin(int value) ;
 void Mode_Daikin(int value) ; // Mode_Auto,  Mode_Dry,  Mode_Cool,  Mode_Heat,  Mode_Fan
-void Temp_Daikin(int value) ; 
+void Temp_Daikin(int value) ; // add_temp
 void Fan_Daikin(int value) ;  //  Fan_Auto, Fan_Night, Fan_1, Fan_2, Fan_3, Fan_4, Fan_5
 void Vertical_Swing_Daikin(int value) ; // on-off
 void Horizontal_Swing_Daikin(int value) ; // on-off
 void Sensor_Daikin(int value) ; // on-off
-void Mold Proof_Daikin(int value) ; // on-off
+void Mold_Proof_Daikin(int value) ; // on-off
 void Silent_Daikin(int value) ; // on-off
 void Powerful_Daikin(int value) ; // on-off
 void Econo_Daikin(int value) ; // on-off
-
+*/
 void setup() {
   pinMode(1, OUTPUT);
   digitalWrite(1, LOW);
@@ -79,27 +80,39 @@ void Timer_on_Daikin(int value){ // on-off
   if (value) {
   IR_data[21] &= 0xBF  ;
   }else{
-  IR_data[21] |= 0x  ; 
+  IR_data[21] |= (0xBF+1)<<1  ; 
   }
 }
-void Timer_on_set_Daikin(int value){
+void Timer_on_set_Daikin(int value){// minutes from 00:00 (midnight)
+  IR_data[26] &= ((value+1)<<1)>>3 ;
+  IR_data[27] &= (((value+1)<<1)<<5) | 0x0F ;
+}
 void Timer_off_Daikin(int value){ // on-off
   if (value) {
   IR_data[21] &= 0xDF  ;
   }else{
-  IR_data[21] |= 0x  ; 
+  IR_data[21] |= (0xDF+1)<<1  ; 
   }
 }
-void Timer_off_set_Daikin(int value) {
+void Timer_off_set_Daikin(int value) { // minutes from 00:00 (midnight)
+  IR_data[27] &= (((value+1)<<1)>>7) | 0xE0 ;
+  IR_data[28] &=  (value+1)<<2  ;
+}
 void Mode_Daikin(int value){ // Mode_Auto,  Mode_Dry,  Mode_Cool,  Mode_Heat,  Mode_Fan
-
-void Temp_Daikin(int value){ 
+    IR_data[21] &= 0xF0  ; 
+    IR_data[21] |= value<<1 ;
+}
+void Temp_Daikin(int value){ // Temp
+  IR_data[22] |= ((value+1)<<2) | 0x7E  ; 
+}
 void Fan_Daikin(int value){  //  Fan_Auto, Fan_Night, Fan_1, Fan_2, Fan_3, Fan_4, Fan_5
+  IR_data[24] |= value | 0xF0 ;  
+}
 void Vertical_Swing_Daikin(int value){ // on-off
   if (value) {
-  IR_data[24] &= 0x0F  ;
+    IR_data[24] &= 0x0F  ;
   }else{
-  IR_data[24] |= (0x0F+1)<<1  ; 
+    IR_data[24] |= (0x0F+1)<<1  ; 
   }
 }
 void Horizontal_Swing_Daikin(int value){ // on-off
@@ -116,7 +129,7 @@ void Sensor_Daikin(int value){ // on-off
   IR_data[32] |= (0xBF+1)<<1  ; 
   }
 }
-void Mold Proof_Daikin(int value){ // on-off
+void Mold_Proof_Daikin(int value){ // on-off
   if (value) {
   IR_data[33] &= 0xBF  ;
   }else{
@@ -132,9 +145,9 @@ void Silent_Daikin(int value){ // on-off
 }
 void Powerful_Daikin(int value){ // on-off
   if (value) {
-  IR_data[] &= 0x7F  ;
+  IR_data[29] &= 0x7F  ;
   }else{
-  IR_data[] |= (0x7F+1)<<1  ; 
+  IR_data[29] |= (0x7F+1)<<1  ; 
   }
 }
 void Econo_Daikin(int value){ // on-off
