@@ -1,8 +1,10 @@
+#define IR_pin 15
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #define daikin_freq  37
 #define daikin_data  27
-#define on  1
-#define off  0
+#define On  1
+#define Off  0
 #define Mode_Auto 0x00
 #define Mode_Dry  0x02
 #define Mode_Cool 0x06
@@ -36,28 +38,28 @@ char IR_data[daikin_data + 1] =
 
 
 */
-//  function  //
+//  functiOn  //
 /*
 void sendDaikin(int khz) ; //sent command
-void PowerDaikin(int value) ; // on-off
-void Timer_on_Daikin(int value) ; // on-off
-void Timer_on_set_Daikin(int value) ;
-void Timer_off_Daikin(int value) ; // on-off
-void Timer_off_set_Daikin(int value) ;
+void PowerDaikin(int value) ; // On-Off
+void Timer_On_Daikin(int value) ; // On-Off
+void Timer_On_set_Daikin(int value) ;
+void Timer_Off_Daikin(int value) ; // On-Off
+void Timer_Off_set_Daikin(int value) ;
 void Mode_Daikin(int value) ; // Mode_Auto,  Mode_Dry,  Mode_Cool,  Mode_Heat,  Mode_Fan
 void Temp_Daikin(int value) ; // add_temp
 void Fan_Daikin(int value) ;  //  Fan_Auto, Fan_Night, Fan_1, Fan_2, Fan_3, Fan_4, Fan_5
-void Vertical_Swing_Daikin(int value) ; // on-off
-void Horizontal_Swing_Daikin(int value) ; // on-off
-void Sensor_Daikin(int value) ; // on-off
-void Mold_Proof_Daikin(int value) ; // on-off
-void Silent_Daikin(int value) ; // on-off
-void Powerful_Daikin(int value) ; // on-off
-void Econo_Daikin(int value) ; // on-off
+void Vertical_Swing_Daikin(int value) ; // On-Off
+void HorizOntal_Swing_Daikin(int value) ; // On-Off
+void Sensor_Daikin(int value) ; // On-Off
+void Mold_Proof_Daikin(int value) ; // On-Off
+void Silent_Daikin(int value) ; // On-Off
+void Powerful_Daikin(int value) ; // On-Off
+void EcOno_Daikin(int value) ; // On-Off
 */
 void setup() {
-    pinMode(1, OUTPUT);
-    digitalWrite(1, LOW);
+    pinMode(IR_pin, OUTPUT);
+    digitalWrite(IR_pin, LOW);
     sendDaikin(daikin_data);
 }
 
@@ -68,34 +70,34 @@ void loop() {
     sendDaikin(daikin_freq);
 }
 
-//  function  //
+//  functiOn  //
 
-void PowerDaikin(int value) { // on-off
+void PowerDaikin(int value) { // On-Off
     if (value) {
         IR_data[21] &= 0x7F  ;
     } else {
         IR_data[21] |= (0x7F+1)>>1  ;
     }
 }
-void Timer_on_Daikin(int value) { // on-off
+void Timer_On_Daikin(int value) { // On-Off
     if (value) {
         IR_data[21] &= 0xBF  ;
     } else {
         IR_data[21] |= (0xBF+1)<<1  ;
     }
 }
-void Timer_on_set_Daikin(int value) { // minutes from 00:00 (midnight)
+void Timer_On_set_Daikin(int value) { // minutes from 00:00 (midnight)
     IR_data[26] &= ((value+1)<<1)>>3 ;
     IR_data[27] &= (((value+1)<<1)<<5) | 0x0F ;
 }
-void Timer_off_Daikin(int value) { // on-off
+void Timer_Off_Daikin(int value) { // On-Off
     if (value) {
         IR_data[21] &= 0xDF  ;
     } else {
         IR_data[21] |= (0xDF+1)<<1  ;
     }
 }
-void Timer_off_set_Daikin(int value) { // minutes from 00:00 (midnight)
+void Timer_Off_set_Daikin(int value) { // minutes from 00:00 (midnight)
     IR_data[27] &= (((value+1)<<1)>>7) | 0xE0 ;
     IR_data[28] &=  (value+1)<<2  ;
 }
@@ -109,49 +111,49 @@ void Temp_Daikin(int value) { // Temp
 void Fan_Daikin(int value) { //  Fan_Auto, Fan_Night, Fan_1, Fan_2, Fan_3, Fan_4, Fan_5
     IR_data[24] |= value | 0xF0 ;
 }
-void Vertical_Swing_Daikin(int value) { // on-off
+void Vertical_Swing_Daikin(int value) { // On-Off
     if (value) {
         IR_data[24] &= 0x0F  ;
     } else {
         IR_data[24] |= (0x0F+1)<<1  ;
     }
 }
-void Horizontal_Swing_Daikin(int value) { // on-off
+void HorizOntal_Swing_Daikin(int value) { // On-Off
     if (value) {
         IR_data[24] &= 0xF0  ;
     } else {
         IR_data[24] |= (0xF0+1)<<1  ;
     }
 }
-void Sensor_Daikin(int value) { // on-off
+void Sensor_Daikin(int value) { // On-Off
     if (value) {
         IR_data[32] &= 0xBF  ;
     } else {
         IR_data[32] |= (0xBF+1)<<1  ;
     }
 }
-void Mold_Proof_Daikin(int value) { // on-off
+void Mold_Proof_Daikin(int value) { // On-Off
     if (value) {
         IR_data[33] &= 0xBF  ;
     } else {
         IR_data[33] |= (0xBF+1)<<1  ;
     }
 }
-void Silent_Daikin(int value) { // on-off
+void Silent_Daikin(int value) { // On-Off
     if (value) {
         IR_data[29] &= 0xFB  ;
     } else {
         IR_data[29] |= (0xFB+1)<<1  ;
     }
 }
-void Powerful_Daikin(int value) { // on-off
+void Powerful_Daikin(int value) { // On-Off
     if (value) {
         IR_data[29] &= 0x7F  ;
     } else {
         IR_data[29] |= (0x7F+1)<<1  ;
     }
 }
-void Econo_Daikin(int value) { // on-off
+void EcOno_Daikin(int value) { // On-Off
     if (value) {
         IR_data[32] &= 0xDF  ;
     } else {
@@ -179,7 +181,7 @@ void sendDaikin(int khz) {
     IR_data[26] = sum &0xFF;
 
     //---------------------------------------------
-    // Enables IR output.  The khz value controls the modulation frequency in kilohertz.
+    // Enables IR output.  The khz value cOntrols the modulatiOn frequency in kilohertz.
     delay_low = 1;
     ir_byte_no = 0;
     ir_header  = 1;
@@ -236,7 +238,7 @@ void dataIROut() {
 
             if (ir_byte_no == daikin_data && j>1) {
                 timer1_detachInterrupt();
-                ir_state = 1;  //IR off
+                ir_state = 1;  //IR Off
             }
 
             if (ir_byte_no == 8 && delay_low == 1 && j > 1) {
@@ -244,7 +246,7 @@ void dataIROut() {
                 timer1_write(clockCyclesPerMicrosecond()*29000); // delay 30ms
                 ir_header  = 1;   // call header
                 resume_tmp = 1;  //resume
-                ir_state = 1;  //IR off
+                ir_state = 1;  //IR Off
             }
         }
 
@@ -254,10 +256,10 @@ void dataIROut() {
 
     if(pwm_enable ==1) {
         ir_state = 1 - ir_state;
-        digitalWrite(1, ir_state);
+        digitalWrite(IR_pin, ir_state);
     } else {
         ir_state = 0;
-        digitalWrite(1, ir_state);
+        digitalWrite(IR_pin, ir_state);
     }
 
 }
